@@ -32,6 +32,3 @@ class Komoot:
         r = requests.get(route_url)
         return r.text
     
-
-if __name__ == "__main__":
-    test = Komoot("https://www.komoot.de/tour/1337546037?ref=itd&share_token=ab4RrjzHVzsEGADQne9wr3dykdERCcSwsQ4iAhJCdat2sBm85i&ref=its")
