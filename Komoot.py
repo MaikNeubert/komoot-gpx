@@ -1,5 +1,6 @@
 import requests
 import gpxpy
+from gpxpy.gpx import GPXWaypoint
 from html.parser import HTMLParser
 from KomootParser import KomootParser
 from KomootTypes import Coordinate, Route, WayPoint
@@ -12,9 +13,24 @@ class Komoot:
         parser.feed(html)
         return parser.route
 
-    
+
     def route_to_gpx(self, route: Route):
         gpx = gpxpy.gpx.GPX()
+
+        gpx.creator = route.creator
+        gpx.name = route.name
+
+        for waypoint in route.wayPoints:
+            gpx.waypoints.append(
+                GPXWaypoint(
+                    waypoint.location.lat,
+                    waypoint.location.lng,
+                    waypoint.location.alt,
+                    name=waypoint.name,
+                    type=waypoint.type
+                )
+            )
+
 
         track = gpxpy.gpx.GPXTrack()
         gpx.tracks.append(track)
@@ -31,4 +47,3 @@ class Komoot:
     def __request_route(self, route_url: str) -> str:
         r = requests.get(route_url)
         return r.text
-    

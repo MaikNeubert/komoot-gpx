@@ -10,7 +10,7 @@ class Coordinate:
 
 
 class WayPoint:
-    def __init__(self, type: str, index: int, name: str, location: List[Coordinate]):
+    def __init__(self, type: str, index: int, name: str, location: Coordinate):
         self.type = type
         self.index = index
         self.name = name
@@ -18,8 +18,10 @@ class WayPoint:
 
 
 class Route:
-    def __init__(self, coordinates: List[Coordinate], creator: str, creatorLink: str, wayPoints: List[WayPoint]):
+    def __init__(self, coordinates: List[Coordinate], creator: str, creatorLink: str, wayPoints: List[WayPoint], name: str, sport: str):
         self.coordinates = coordinates
         self.creator = creator
         self.creatorLink = creatorLink
         self.wayPoints = wayPoints
+        self.name = name
+        self.sport = sport

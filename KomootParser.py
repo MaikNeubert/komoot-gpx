@@ -38,7 +38,15 @@ class KomootParser(HTMLParser):
         creator = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["display_name"]
         creatorLink = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["_links"]["self"]["href"]
 
-        return Route(coordinates, creator, creatorLink, wayPoints)
+        sport = None
+        if "sport" in routeData["page"]["_embedded"]["tour"]:
+            sport = routeData["page"]["_embedded"]["tour"]["sport"]
+        
+        name = None
+        if "name" in routeData["page"]["_embedded"]["tour"]:
+            name = routeData["page"]["_embedded"]["tour"]["name"]
+
+        return Route(coordinates, creator, creatorLink, wayPoints, name, sport)
     
     def __map_coordinates(self, routeData) -> List[Coordinate]:
         coordinates = []
@@ -57,7 +65,7 @@ class KomootParser(HTMLParser):
                 name = None
 
             if "alt" in wayPoint["_embedded"]["reference"]["location"]:
-                alt = wayPoint["_embedded"]["reference"]["location"]
+                alt = wayPoint["_embedded"]["reference"]["location"]["alt"]
             else:
                 alt = None
 
