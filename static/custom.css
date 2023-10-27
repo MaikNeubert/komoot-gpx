@@ -4,11 +4,23 @@
     width: 90%;
 }
 
+.leaflet-popup-content {
+    font-size: 1.5em !important; 
+}
+
+#map {
+    height: 300px;
+    margin-bottom: 25px;
+}
 
 /* Larger than mobile screen */
 @media (min-width: 40.0rem) { 
     .wrapper {
         width: 80%;
+    }
+
+    #map {
+        height: 400px;
     }
  }
 
@@ -16,6 +28,10 @@
 @media (min-width: 80.0rem) { 
     .wrapper {
         width: 70%;
+    }
+
+    #map {
+        height: 500px;
     }
  }
 

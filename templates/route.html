@@ -4,6 +4,13 @@
     <link rel="stylesheet" href="/static/normalize.css">
     <link rel="stylesheet" href="/static/milligram.min.css">
     <link rel="stylesheet" href="/static/custom.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -11,21 +18,44 @@
         <h4 style="margin-bottom: 0;">{{name}}</h4>
         <div style="margin-bottom: 25px;">creator: {{creator}}</div>
         <button type="button" onclick="download()"> Download GPX </button> <br>  
+        <div id="map"></div>
         <label for="gpx">GPX: </label>
         <textarea readonly id="gpx" style="max-width:100%;height:300px">{{gpx}}</textarea><br>
     </div>
 </body>
 <script>
+    let map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    const gpx = document.getElementById("gpx").value.trim();
+
+    new L.GPX(
+            gpx,
+            {
+                async: true,   marker_options: {
+                    startIconUrl: 'static/pin-icon-start.png',
+                    endIconUrl: 'static/pin-icon-end.png',
+                    shadowUrl: 'static/pin-shadow.png',
+                    wptIconUrls : {
+                        '': 'static/pin-icon-wptc.png',
+                    },
+            }
+        })
+        .on('loaded', function(e) {
+            map.fitBounds(e.target.getBounds());
+        }).addTo(map);
+
     const MAX_FILENAME_LENGTH = 90;
 
     const reRelativePath = /^\.+(\\|\/)|^\.+$/;
     const reTrailingPeriods = /\.+$/;
 
-    function download() {
-        let user_input = document.getElementById("gpx").value.trim();
-        
+    function download() {       
         var hidden_a = document.createElement("a");
-        hidden_a.setAttribute("href", "data:text/gpx;charset=utf-8," + encodeURIComponent(user_input));
+        hidden_a.setAttribute("href", "data:text/gpx;charset=utf-8," + encodeURIComponent(gpx));
 
         let name = "{{name}}"
         let creator = "{{creator}}"

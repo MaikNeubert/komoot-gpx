@@ -39,3 +39,8 @@ with app.test_request_context():
     url_for('static', filename='milligram.min.css')
     url_for('static', filename='normalize.css')
     url_for('static', filename='custom.css')
+    url_for('static', filename='pin-icon-end.png')
+    url_for('static', filename='pin-icon-start.png')
+    url_for('static', filename='pin-icon-wptc.png')
+    url_for('static', filename='pin-shadow.png')
+
