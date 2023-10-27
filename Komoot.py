@@ -5,6 +5,13 @@ from html.parser import HTMLParser
 from KomootParser import KomootParser
 from KomootTypes import Coordinate, Route, WayPoint
 
+class Forbidden(Exception):
+    pass
+
+class ServerError(Exception):
+    pass
+
+
 class Komoot:
 
     def get_route(self, route_url):
@@ -46,4 +53,8 @@ class Komoot:
 
     def __request_route(self, route_url: str) -> str:
         r = requests.get(route_url)
+        if r.status_code == 403:
+            raise Forbidden()
+        if r.status_code != 200:
+            raise ServerError(r.status_code, r.reason)
         return r.text

@@ -3,6 +3,9 @@ from KomootTypes import Coordinate, Route, WayPoint
 from typing import List
 import re, json, ast
 
+class ParserException(Exception):
+    pass
+
 class KomootParser(HTMLParser):
     _last_starttag = ""
     route = None
@@ -27,22 +30,31 @@ class KomootParser(HTMLParser):
         if len(route) == 0:
             return
         
-        unescapedRoute = ast.literal_eval(f"'{route[0]}'")
-        routeData = json.loads(unescapedRoute)
+        t = f'{{"route": "{route[0]}" }}'
+        t = json.loads(t)
+        routeData = json.loads(t["route"])
+
         self.route = self.__map_route(routeData)            
 
 
     def __map_route(self, routeData) -> Route:
         coordinates = self.__map_coordinates(routeData)      
         wayPoints = self.__map_way_points(routeData)
-        creator = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["display_name"]
-        creatorLink = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["_links"]["self"]["href"]
 
-        sport = None
+        creator = "unknown"
+        creatorLink = ""
+        if "creator" in routeData["page"]["_embedded"]["tour"]["_embedded"]:
+            if "display_name" in routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]:
+                creator = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["display_name"]
+            
+            if "_links" in routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]:
+                creatorLink = routeData["page"]["_embedded"]["tour"]["_embedded"]["creator"]["_links"]["self"]["href"]
+
+        sport = "unknown"
         if "sport" in routeData["page"]["_embedded"]["tour"]:
             sport = routeData["page"]["_embedded"]["tour"]["sport"]
         
-        name = None
+        name = "unknown"
         if "name" in routeData["page"]["_embedded"]["tour"]:
             name = routeData["page"]["_embedded"]["tour"]["name"]
 
